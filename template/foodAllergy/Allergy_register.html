@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action="{% url 'foodAllergy:regist' %}" method="post">
+{% csrf_token %}
+    <input type="text" name="allergyName" id="allergyName"></input>
+    <input type="text" name="highLevelAllergy" id="highLevelAllergy"></input>
+
+<input type="submit" value="알러지등록">
+</form>
+</body>
+</html>
