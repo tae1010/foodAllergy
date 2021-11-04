@@ -6,9 +6,6 @@ from .models import Allergy
 
 
 def index(request):
-    allergy = Allergy(allergyName=request.POST.get('allergyName'),
-                      highLevelAllergy=request.POST.get('highLevelAllergy'), level=request.POST.get('level'),
-                      myAllergy=request.POST.get('myAllergy'))
     Allergy_list = Allergy.objects.order_by()
     context = {'Allergy_list': Allergy_list}
     return render(request, "foodAllergy/Allergy_list.html", context)
@@ -19,8 +16,9 @@ def detail(request):
 
 
 def allergy_register(request):
-
-    return render(request,'foodAllergy/Allergy_register.html')
+    Allergy_list = Allergy.objects.order_by()
+    context = {'Allergy_list': Allergy_list}
+    return render(request,'foodAllergy/Allergy_register.html', context)
 
 
 def regist(request):
@@ -38,3 +36,11 @@ def regist(request):
     a.save()
 
     return redirect('foodAllergy:register')
+
+
+def showLv2(request, allergy_name):
+    Allergy_list = Allergy.objects.order_by()
+    a = Allergy.objects.get(allergyName=allergy_name)
+    context = {'allergyName' : a, 'Allergy_list': Allergy_list}
+
+    return render(request, 'foodAllergy/Allergy_register.html',context)

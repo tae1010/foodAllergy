@@ -11,4 +11,6 @@ urlpatterns = [
 
     #allergy에 db저장하기
     path('regist/', views.regist, name='regist'),
+
+    path('register/<str:allergy_name>/', views.showLv2, name='showLv2'),
 ]
