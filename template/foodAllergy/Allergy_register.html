@@ -23,18 +23,32 @@
 {% else %}
     <p>알러지가 없습니다.</p>
 {% endif %}
+</form>
     <br><br>
 
+
+<form action="{% url 'foodAllergy:addMyAllergy' %}" method="post">
+{% csrf_token %}
 {% if allergyName %}
     <ul>
         {% for Allergy in Allergy_list %}
             {% if Allergy.highLevelAllergy == allergyName.allergyName %}
-                {{ Allergy.allergyName }}<br>
+                <label><input type="checkbox" name="checkAllergy[]" value={{Allergy.allergyName}} > {{ Allergy.allergyName }} </label>
+                <br>
             {% endif %}
         {% endfor %}
+        <input type="submit" value="알러지 추가">
     </ul>
 {% else %}
-    <p>알러지가 없습니다.</p>
+    <p>하위레벨이 없습니다</p>
+{% endif %}
+
+
+
+{% if check %}
+    {% for ck in check %}
+        {{ ck }} <br>
+    {% endfor %}
 {% endif %}
 </form>
 </body>

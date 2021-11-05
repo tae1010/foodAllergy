@@ -13,4 +13,6 @@ urlpatterns = [
     path('regist/', views.regist, name='regist'),
 
     path('register/<str:allergy_name>/', views.showLv2, name='showLv2'),
+
+    path('register/addMyAllergy', views.addMyAllergy, name='addMyAllergy'),
 ]
