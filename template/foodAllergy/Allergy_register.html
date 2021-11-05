@@ -44,12 +44,25 @@
 {% endif %}
 
 
+내 알러지 Lv1<br><br>
+    {% for allergy in Allergy_list %}
+        {% if allergy.myAllergy == "Y" and allergy.level == 1 %}
+            {{ allergy.allergyName }}<br>
 
-{% if check %}
-    {% for ck in check %}
-        {{ ck }} <br>
+
+                {% for allergy2 in Allergy_list %}
+                    {% if allergy2.myAllergy == "Y" and allergy2.highLevelAllergy == allergy.allergyName %}
+                        {% if allergy2.level == 2 %}
+                            {{ allergy2.allergyName }}<br>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+
+        <br>
+        {% endif %}
     {% endfor %}
-{% endif %}
+<br><br><br>
+
 </form>
 </body>
 </html>

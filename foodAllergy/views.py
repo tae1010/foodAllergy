@@ -57,4 +57,9 @@ def addMyAllergy(request):
                 allergy.myAllergy = "Y"
                 allergy.save()
 
+                for highAllergy in Allergy_list:
+                    if highAllergy.allergyName == allergy.highLevelAllergy:
+                        highAllergy.myAllergy = "Y"
+                        highAllergy.save()
+
     return render(request, 'foodAllergy/Allergy_register.html',context)
