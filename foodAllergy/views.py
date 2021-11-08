@@ -81,27 +81,56 @@ def regist(request):
 
 
 def showLv2(request, allergy_name):
-    Allergy_list = Allergy.objects.order_by()
-    a = Allergy.objects.get(allergyName=allergy_name)
-    context = {'allergyName': a, 'Allergy_list': Allergy_list}
+    allergy_list = Allergy.objects.order_by()
+    allergy_high = []
 
-    return render(request, 'foodAllergy/Allergy_register.html', context)
+    global find_high  # 알러지 추가할때 레벨2 체크하기전 레벨1이 뭔지 저장
+    find_high = allergy_name
+
+    count = 0
+
+    for allergy in allergy_list:
+        allergy_high.append(allergy.highLevelAllergy)
+
+    if allergy_name not in allergy_high:
+        count = 1
+
+    print(allergy_high)
+
+    a = Allergy.objects.get(allergyName=allergy_name)
+    context = {'allergyName': a, 'Allergy_list': allergy_list, 'count': count}
+
+    return render(request, 'FoodAllergy/Allergy_register.html',context)
 
 
 def addMyAllergy(request):
     check = request.POST.getlist('checkAllergy[]')
-    Allergy_list = Allergy.objects.order_by()
-    context = {'check': check, 'Allergy_list': Allergy_list}
+    allergy_list = Allergy.objects.order_by()
+    context = {'check':check, 'Allergy_list': allergy_list}
+    # current_url = resolve(request.path_info).url_name
+    allergy_high = []
 
-    for allergy in Allergy_list:
+    print(check)
+    global find_high
+    print("find_high : " + find_high)
+
+    for allergy in allergy_list:
+        allergy_high.append(allergy.highLevelAllergy)
+
+    for allergy in allergy_list:
         for ck in check:
             if ck == allergy.allergyName:
-                allergy.myAllergy = "Y"
-                allergy.save()
+                if allergy.highLevelAllergy == find_high:
+                    allergy.myAllergy = "Y"
+                    allergy.save()
 
-                for highAllergy in Allergy_list:
-                    if highAllergy.allergyName == allergy.highLevelAllergy:
-                        highAllergy.myAllergy = "Y"
-                        highAllergy.save()
+                    for highAllergy in allergy_list:
+                        if highAllergy.allergyName == allergy.highLevelAllergy:
+                            highAllergy.myAllergy = "Y"
+                            highAllergy.save()
+
+                elif find_high not in allergy_high:
+                    allergy.myAllergy = "Y"
+                    allergy.save()
 
     return render(request, 'foodAllergy/Allergy_register.html', context)
