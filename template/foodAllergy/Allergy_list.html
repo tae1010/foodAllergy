@@ -5,6 +5,8 @@
   <title>Title</title>
 </head>
 <body>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}">
 
 <button onClick="location.href='{% url 'foodAllergy:register' %}'">등록하기</button>
 <input type="button" value="버튼" onClick="location.href='allergy_regist.html'"/>
