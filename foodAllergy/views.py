@@ -4,8 +4,8 @@ from .models import Allergy
 # Create your views here.
 
 def index(request):
-    Allergy_list = Allergy.objects.order_by()
-    context = {'Allergy_list': Allergy_list}
+    allergy_list = Allergy.objects.order_by()
+    context = {'allergy_list': allergy_list}
     return render(request, "foodAllergy/Allergy_list.html", context)
 
 
@@ -14,8 +14,8 @@ def detail(request):
 
 
 def allergy_register(request):
-    Allergy_list = Allergy.objects.order_by()
-    context = {'Allergy_list': Allergy_list}
+    allergy_list = Allergy.objects.order_by()
+    context = {'allergy_list': allergy_list}
     return render(request, 'foodAllergy/Allergy_register.html', context)
 
 
@@ -96,7 +96,7 @@ def showLv2(request, allergy_name):
     print(allergy_high)
 
     a = Allergy.objects.get(allergyName=allergy_name)
-    context = {'allergyName': a, 'Allergy_list': allergy_list, 'count': count}
+    context = {'allergyName': a, 'allergy_list': allergy_list, 'count': count}
 
     return render(request, 'foodAllergy/Allergy_register.html',context)
 
@@ -116,34 +116,15 @@ def myshowLv2(request, allergy_name):
             break
 
     a2 = Allergy.objects.get(allergyName=allergy_name)
-    context = {'allergyName2': a2, 'Allergy_list2': allergy_list2, 'count2': count2}
+    context = {'allergyName2': a2, 'allergy_list2': allergy_list2, 'count2': count2}
 
     return render(request, 'foodAllergy/Allergy_register.html',context)
-
-def myShowLv2(request, allergy_name):
-    allergy_list = Allergy.objects.order_by()
-
-    global find_high  # 알러지 추가할때 레벨2 체크하기전 레벨1이 뭔지 저장
-    find_high = allergy_name
-
-    count = 0
-
-    for allergy in allergy_list:
-        count = 1
-        if allergy_name == allergy.highLevelAllergy and allergy.myAllergy == "Y":
-            count = 0
-            break
-
-    a = Allergy.objects.get(allergyName=allergy_name)
-    context = {'allergyName2': a, 'allergy_list2': allergy_list, 'count2': count }
-
-    return render(request, 'FoodAllergy/allergy_regist.html',context)
 
 
 def addMyAllergy(request):
     check = request.POST.getlist('checkAllergy[]')
     allergy_list = Allergy.objects.order_by()
-    context = {'check':check, 'Allergy_list': allergy_list}
+    context = {'check':check, 'allergy_list': allergy_list}
     # current_url = resolve(request.path_info).url_name
     allergy_high = []
 
@@ -176,16 +157,10 @@ def addMyAllergy(request):
 def deleteMyAllergy(request):
     check = request.POST.getlist('checkAllergy2[]')
     allergy_list = Allergy.objects.order_by()
-    context = {'check2':check, 'Allergy_list2': allergy_list}
-    # current_url = resolve(request.path_info).url_name
-    allergy_high = []
+    allergy_my = []
 
-    print(check)
     global find_high
     print("find_high : " + find_high)
-
-    for allergy in allergy_list:
-        allergy_high.append(allergy.highLevelAllergy)
 
     for allergy in allergy_list:
         for ck in check:
@@ -194,14 +169,20 @@ def deleteMyAllergy(request):
                     allergy.myAllergy = "N"
                     allergy.save()
 
-                    for highAllergy in allergy_list:
-                        if highAllergy.allergyName == allergy.highLevelAllergy:
-                            highAllergy.myAllergy = "N"
-                            highAllergy.save()
+    allergy_list = Allergy.objects.order_by()
 
-                elif find_high not in allergy_high:
-                    allergy.myAllergy = "N"
-                    allergy.save()
+    for allergy in allergy_list:
+        if allergy.highLevelAllergy == find_high:
+            allergy_my.append(allergy.myAllergy)
+
+    print(allergy_my)
+
+    if 'Y' not in allergy_my:
+        for allergy in allergy_list:
+            if allergy.allergyName == find_high:
+                allergy.myAllergy = "N"
+                allergy.save()
+
+    context = {'check2': check, 'allergy_list2': allergy_list}
 
     return render(request, 'foodAllergy/Allergy_register.html', context)
-

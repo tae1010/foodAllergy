@@ -16,7 +16,7 @@ urlpatterns = [
 
     path('register/<str:allergy_name>/', views.showLv2, name='showLv2'),
 
-    path('register/asd/<str:allergy_name>/', views.myshowLv2, name='myshowLv2'),
+    path('register/myAllergy/<str:allergy_name>/', views.myshowLv2, name='myshowLv2'),
 
     path('register/addMyAllergy', views.addMyAllergy, name='addMyAllergy'),
 
