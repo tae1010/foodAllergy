@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+{% if result_list %}
+{% for result in result_list %}
+
+<h5><li><a href="{% url 'foodAllergy:detailResult' result.productName %}">{{ result.productName }}</a></li></h5><br>
+{% endfor %}
+{% endif %}
+
+{{ result.productName }}<br>
+{{ result.productContent }}<br>
+{{ result.allergyResult }}<br>
+{{ result.create_date }}<br>
+
+</body>
+</html>

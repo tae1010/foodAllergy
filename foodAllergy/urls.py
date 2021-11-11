@@ -11,7 +11,7 @@ urlpatterns = [
 
     path('register/', views.allergy_register, name='register'),
 
-    #allergy에 db저장하기
+    # allergy에 db저장하기
     path('regist/', views.regist, name='regist'),
 
     path('register/<str:allergy_name>/', views.showLv2, name='showLv2'),
@@ -21,4 +21,15 @@ urlpatterns = [
     path('register/addMyAllergy', views.addMyAllergy, name='addMyAllergy'),
 
     path('register/deleteMyAllergy', views.deleteMyAllergy, name='deleteMyAllergy'),
+    # -------------------------------------------------------------------------------------
+
+    # 불러오기 창이동
+    path('resultLoad/',views.resultLoad, name='resultLoad'),
+
+    path('resultLoad/<str:result_name>/', views.detailResult, name='detailResult'),
+
+    path('saveResult',views.resultSave, name='resultSave'),
+
+    path('chImage', views.chImage, name='chImage'),
+
 ]
