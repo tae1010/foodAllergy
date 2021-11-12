@@ -18,9 +18,9 @@ urlpatterns = [
 
     path('register/myAllergy/<str:allergy_name>/', views.myshowLv2, name='myshowLv2'),
 
-    path('register/addMyAllergy', views.addMyAllergy, name='addMyAllergy'),
+    path('register/addMyAllergy/', views.addMyAllergy, name='addMyAllergy'),
 
-    path('register/deleteMyAllergy', views.deleteMyAllergy, name='deleteMyAllergy'),
+    path('register/deleteMyAllergy/', views.deleteMyAllergy, name='deleteMyAllergy'),
     # -------------------------------------------------------------------------------------
 
     # 불러오기 창이동
@@ -28,8 +28,10 @@ urlpatterns = [
 
     path('resultLoad/<str:result_name>/', views.detailResult, name='detailResult'),
 
-    path('saveResult',views.resultSave, name='resultSave'),
+    path('saveResult/',views.resultSave, name='resultSave'),
 
-    path('chImage', views.chImage, name='chImage'),
+    path('chImage/', views.chImage, name='chImage'),
+
+    path('uploadfile/', views.uploadfile, name='uploadfile'),
 
 ]

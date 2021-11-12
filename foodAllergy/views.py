@@ -11,7 +11,6 @@ import pytesseract
 import numpy as np
 
 # Create your views here.
-
 def index(request):
     allergy_list = Allergy.objects.order_by()
     context = {'allergy_list': allergy_list}
@@ -228,12 +227,16 @@ def resultSave(request):
 
 #-------------------------------------------------------------
 
+
 def chImage(request):
     pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract'
 
+    filename = f_name
+    print("파일이름: "+ filename)
+
     # 이미지 불러오기, Gray 프로세싱
     # 이미지 전처리
-    image = cv2.imread("C:/Users/kjt/PycharmProjects/pythonProject/static/images/test05.jpg")
+    image = cv2.imread("static/images/" + filename)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     # gray = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
@@ -243,8 +246,8 @@ def chImage(request):
         kernel = np.ones((1, 1), np.uint8)
         result = cv2.morphologyEx(image, cv2.MORPH_OPEN, kernel)
         return result
-
     gray = opening(gray)
+
 
     # 글자 프로세싱을 위해 Gray 이미지 임시파일 형태로 저장.
     filename = "{}.png".format(os.getpid())
@@ -255,6 +258,7 @@ def chImage(request):
     arr = text.split('\n')[0:-1]
     text = '\n'.join(arr)
     os.remove(filename)
+
     text = text.strip().replace("\n", "")
 
     allergy_list = Allergy.objects.order_by()
@@ -265,5 +269,36 @@ def chImage(request):
             if text.find(allergy.allergyName) != -1:
                 exist_allergy.append(allergy.allergyName)
 
-    text = {'text':text, 'exist_allergy':exist_allergy}
+    text = {'text': text, 'exist_allergy': exist_allergy}
+
     return render(request, 'foodAllergy/main.html', text)
+
+
+def uploadfile(request):
+    filename = ""
+    print(request)
+    global f_name
+
+    if request.method != 'POST':  # GET 방식 요청
+        pass
+    else:  # POST 방식 요청
+        try:
+            # request.FILES["file"] : 업로드된 파일
+            filename = request.FILES["file"].name  # 업로드된 파일 이름
+
+            f_name = filename
+
+            handle_upload(request.FILES["file"])
+            # text = chImage2(filename)
+            print("filename=", filename)
+        except Exception as e:                             # 예외가 발생했을 때 실행됨
+            print('예외가 발생했습니다.', e)
+            filename = ""
+            print("filename=", filename)
+    return render(request, 'foodAllergy/main.html', {'filename': filename})
+
+
+def handle_upload(f):
+    with open("static/images/" + f.name, 'wb+') as destination:
+        for ch in f.chunks():
+            destination.write(ch)
