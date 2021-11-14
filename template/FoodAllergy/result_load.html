@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body style="background: #C9D6FF;  /* fallback for old browsers /
+background: -webkit-linear-gradient(to right, #E2E2E2, #C9D6FF);  / Chrome 10-25, Safari 5.1-6 /
+background: linear-gradient(to right, #E2E2E2, #C9D6FF); / W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+">
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}">
+    <div class="container">
+
+        <div class="row">
+            <div class="col-sm-5">
+            <br>
+
+            <button class="btn btn-primary" onClick="location.href='{% url 'FoodAllergy:index' %}'">메인으로</button><br><br><br>
+            {% if result_list %}
+                        <ul>
+                            {% for result in result_list %}
+                                <h5><li><strong><a href="{% url 'FoodAllergy:detailResult' result.productName %}">{{ result.productName }}</a></strong></li></h5><br>
+                            {% endfor %}
+                        </ul>
+            {% else %}
+            <p>알러지가 없습니다.</p>
+            {% endif %}
+            </div>
+
+            <div class="col-sm-2">
+            </div>
+
+            <div class="col-sm-5">
+                <br><br><br><br>
+                <h5><strong>등록일자 : </strong> &nbsp;&nbsp;{{ result.create_date }}</h5><br><br>
+                <h4><strong>상품명 : </strong>&nbsp;&nbsp;{{ result.productName }}</h4><br><br>
+                <h5><strong>성분내용 : </strong><br>{{ result.productContent }}</h5><br><br>
+                <h4><strong>알러지 비교 결과 : </strong>&nbsp;&nbsp;{{ result.allergyResult }}</h4>
+
+            </div>
+        </div>
+</div>
+</body>
+
+</html>

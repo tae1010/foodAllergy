@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body style="background: #C9D6FF;  /* fallback for old browsers /
+background: -webkit-linear-gradient(to right, #E2E2E2, #C9D6FF);  / Chrome 10-25, Safari 5.1-6 /
+background: linear-gradient(to right, #E2E2E2, #C9D6FF); / W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+">
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}">
+<div class="container">
+<br>
+    <button class="btn btn-primary" onClick="location.href='{% url 'FoodAllergy:index' %}'">메인으로</button>
+
+    <form class="form-inline"  style="width:30%" action="{% url 'FoodAllergy:regist' %}" method="post">
+    {% csrf_token %}
+        <div class="form-group">
+            <label for="allergyName"><strong>메인 성분</strong></label>
+            <input class="form-control" type="text" name="allergyName" id="allergyName">
+        </div>
+        <div class="form-group">
+            <label for="highLevelAllergy"><strong>상세 성분</strong></label>
+            <input class="form-control" type="text" name="highLevelAllergy" id="highLevelAllergy">
+        </div>
+        <div class="form-group">
+            <input style ="background: #0064FF" type="submit" class="btn btn-primary" value="알러지등록">
+        </div>
+    </form>
+    <br>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col"><h5><strong>전체 알러지</strong></h5></th>
+            <th scope="col">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+            <th scope="col"><h5><strong>내 알러지</strong></h5></th>
+            <th scope="col">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+    </table>
+
+    <div class="row">
+        <div class="col-sm-3 card bg-secondary mb-3">
+            <div class="card-header">Lv1</div>
+            <br>
+            {% if allergy_list %}
+                <ul>
+                    {% for allergy in allergy_list %}
+                        {% if allergy.level == 1 %}
+                            <h5><li><a href="{% url 'FoodAllergy:showLv2' allergy.allergyName %}">{{ allergy.allergyName }}</a></li></h5><br>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            {% elif allergy_list2 %}
+                <ul>
+                    {% for allergy in allergy_list2 %}
+                        {% if allergy.level == 1 %}
+                            <h5><li><a href="{% url 'FoodAllergy:showLv2' allergy.allergyName %}">{{ allergy.allergyName }}</a></li></h5><br>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>알러지가 없습니다.</p>
+            {% endif %}
+                <br><br>
+        </div>
+        <div class="col-sm-3 card text-white bg-info mb-3">
+            <div class="card-header" >Lv2</div>
+            <div class="card-body">
+            <form action="{% url 'FoodAllergy:addMyAllergy' %}" method="post">
+            {% csrf_token %}
+            {% if allergyName %}
+                <ul>
+                    {% if count == 0 %}
+                        {% for allergy in allergy_list %}
+                            {% if allergy.highLevelAllergy == allergyName.allergyName %}
+                            <div class="form-check">
+                                <h5><label><input type="checkbox" name="checkAllergy[]" value={{allergy.allergyName}} > {{ allergy.allergyName }} </label></h5>
+                                <br>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                    <div class="form-check">
+                        <h5><label><input type="checkbox" name="checkAllergy[]" value={{allergyName.allergyName}} > {{ allergyName.allergyName }} </label></h5>
+                        <br>
+                    </div>
+                    {% endif %}
+
+
+                    <input class="btn btn-secondary" type="submit" value="알러지 추가">
+                </ul>
+            {% else %}
+
+            {% endif %}
+            </form>
+            </div>
+        </div>
+
+        <div class="col-sm-3 card bg-secondary mb-3">
+            <div class="card-header" >Lv1</div>
+            <br>
+            {% if allergy_list %}
+                <ul>
+                    {% for allergy in allergy_list %}
+                        {% if allergy.level == 1 and allergy.myAllergy == "Y" %}
+                            <h5><li><a href="{% url 'FoodAllergy:myShowLv2' allergy.allergyName %}">{{ allergy.allergyName }}</a></li></h5><br>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            {% elif allergy_list2 %}
+                <ul>
+                    {% for allergy in allergy_list2 %}
+                        {% if allergy.level == 1 and allergy.myAllergy == "Y" %}
+                           <h5><li><a href="{% url 'FoodAllergy:myShowLv2' allergy.allergyName %}">{{ allergy.allergyName }}</a></li></h5><br>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>알러지가 없습니다.</p>
+            {% endif %}
+        </div>
+
+        <div class="col-sm-3 card text-white bg-info mb-3">
+            <div class="card-header">Lv2</div><br>
+            <form action="{% url 'FoodAllergy:deleteMyAllergy' %}" method="post">
+            {% csrf_token %}
+            {% if allergyName2 %}
+                <ul>
+                    {% if count2 == 0 %}
+                        {% for allergy in allergy_list2 %}
+                            {% if allergy.highLevelAllergy == allergyName2.allergyName and allergy.myAllergy == "Y" %}
+                            <div class="form-check">
+                                <h5><label><input type="checkbox" name="checkAllergy[]" value={{allergy.allergyName}} > {{ allergy.allergyName }} </label></h5>
+                                <br>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                    <div class="form-check">
+                        <h5><label><input type="checkbox" name="checkAllergy[]" value={{allergyName2.allergyName}} > {{ allergyName2.allergyName }} </label></h5>
+                        <br>
+                    </div>
+                    {% endif %}
+
+
+                    <input class="btn btn-secondary" type="submit" value="알러지 삭제">
+                </ul>
+            {% else %}
+
+            {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

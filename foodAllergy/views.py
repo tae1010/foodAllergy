@@ -1,6 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Allergy, Result
 import datetime
+
 import cv2
 import os
 try:
@@ -10,24 +11,80 @@ except ImportError:
 import pytesseract
 import numpy as np
 
+from django.contrib import messages
+from django.urls import resolve
 # Create your views here.
+
+
+
+
 def index(request):
+
     allergy_list = Allergy.objects.order_by()
+
     context = {'allergy_list': allergy_list}
-    return render(request, "foodAllergy/main.html", context)
 
 
-def detail(request):
-    return render(request, 'foodAllergy/result_load.html')
+
+    # messages.add_message(request, messages.ERROR, 'Hello world.')
+
+    return render(request, 'FoodAllergy/main.html', context)
+
+
+def resultLoad(request):
+
+    result_list = Result.objects.order_by()
+    context = {'result_list': result_list}
+    # messages.add_message(request, messages.ERROR, 'Hello world.')
+
+    return render(request, 'FoodAllergy/result_load.html', context)
+
+def detailResult(request, result_name):
+
+    result_list = Result.objects.order_by()
+    result = Result.objects.get(productName=result_name)
+
+    context = {'result_list': result_list, 'result':result}
+    # messages.add_message(request, messages.ERROR, 'Hello world.')
+
+    return render(request, 'FoodAllergy/result_load.html', context)
+
+
+def resultSave(request):
+    #result_list = Result.objects.order_by()
+    f_productName = request.POST.get('f_productName')
+    f_productContent = request.POST.get('f_productContent')
+    f_exist = request.POST.get('f_exist')
+    now = datetime.datetime.now()
+
+    f_exist = f_exist.strip().replace("\n", "").replace(" ", "")
+
+    a = Result(productName=f_productName, productContent=f_productContent,
+               allergyResult=f_exist, create_date=now)
+    a.save()
+    # messages.add_message(request, messages.ERROR, 'Hello world.')
+
+    return redirect('FoodAllergy:index')
+
+
+#----------------------------------------------------------------------
+
+def detail(request, allergy_id):
+
+    allergy = Allergy.objects.get(id=allergy_id)
+    context = {'allergy': allergy}
+    return render(request, 'FoodAllergy/result_load.html', context)
 
 
 def allergy_register(request):
     allergy_list = Allergy.objects.order_by()
-    context = {'allergy_list': allergy_list}
-    return render(request, 'foodAllergy/Allergy_register.html', context)
+    allergy_list2 = Allergy.objects.order_by()
 
+    context = {'allergy_list': allergy_list, 'allergy_list2': allergy_list2}
+    return render(request, 'FoodAllergy/allergy_regist.html', context)
 
 def regist(request):
+
     allergy_list = Allergy.objects.order_by()
     allergy_names = []
     allergy_Lv2 = []
@@ -36,18 +93,16 @@ def regist(request):
     allergyLv1 = request.POST.get('allergyName')
 
     for allergy in allergy_list:
-        if allergy.level == 2 and allergy.highLevelAllergy == allergyLv1:
-            allergy_Lv2.append(allergy.allergyName)
-
+        allergy_names.append(allergy.allergyName)
 
     for allergy in allergy_list:
-        allergy_names.append(allergy.allergyName)
+        if allergy.level == 2 and allergy.highLevelAllergy == allergyLv1:
+            allergy_Lv2.append(allergy.allergyName)
 
     # 둘다 비어있을때
     if allergyLv1 == "" and highLevelAllergy == "":
         print("입력해주세요")
 
-    #
     elif allergyLv1 == "":
         print("lv1만 적던가 둘다 적어주세요")
 
@@ -83,8 +138,9 @@ def regist(request):
                             level=2, myAllergy="N")
                 a.save()
 
-    return redirect('foodAllergy:register')
 
+
+    return redirect('FoodAllergy:register')
 
 def showLv2(request, allergy_name):
     allergy_list = Allergy.objects.order_by()
@@ -106,27 +162,26 @@ def showLv2(request, allergy_name):
     a = Allergy.objects.get(allergyName=allergy_name)
     context = {'allergyName': a, 'allergy_list': allergy_list, 'count': count}
 
-    return render(request, 'foodAllergy/Allergy_register.html',context)
+    return render(request, 'FoodAllergy/allergy_regist.html',context)
 
-
-def myshowLv2(request, allergy_name):
-    allergy_list2 = Allergy.objects.order_by()
+def myShowLv2(request, allergy_name):
+    allergy_list = Allergy.objects.order_by()
 
     global find_high  # 알러지 추가할때 레벨2 체크하기전 레벨1이 뭔지 저장
     find_high = allergy_name
 
-    count2 = 0
+    count = 0
 
-    for allergy in allergy_list2:
-        count2 = 1
+    for allergy in allergy_list:
+        count = 1
         if allergy_name == allergy.highLevelAllergy and allergy.myAllergy == "Y":
-            count2 = 0
+            count = 0
             break
 
-    a2 = Allergy.objects.get(allergyName=allergy_name)
-    context = {'allergyName2': a2, 'allergy_list2': allergy_list2, 'count2': count2}
+    a = Allergy.objects.get(allergyName=allergy_name)
+    context = {'allergyName2': a, 'allergy_list2': allergy_list, 'count2': count }
 
-    return render(request, 'foodAllergy/Allergy_register.html',context)
+    return render(request, 'FoodAllergy/allergy_regist.html',context)
 
 
 def addMyAllergy(request):
@@ -137,6 +192,8 @@ def addMyAllergy(request):
     allergy_high = []
 
     print(check)
+
+
     global find_high
     print("find_high : " + find_high)
 
@@ -159,16 +216,18 @@ def addMyAllergy(request):
                     allergy.myAllergy = "Y"
                     allergy.save()
 
-    return render(request, 'foodAllergy/Allergy_register.html', context)
+    return render(request, 'FoodAllergy/allergy_regist.html',context)
 
 
 def deleteMyAllergy(request):
-    check = request.POST.getlist('checkAllergy2[]')
+    check = request.POST.getlist('checkAllergy[]')
     allergy_list = Allergy.objects.order_by()
+
     allergy_my = []
 
     global find_high
     print("find_high : " + find_high)
+
 
     for allergy in allergy_list:
         for ck in check:
@@ -176,6 +235,7 @@ def deleteMyAllergy(request):
                 if allergy.highLevelAllergy == find_high:
                     allergy.myAllergy = "N"
                     allergy.save()
+
 
     allergy_list = Allergy.objects.order_by()
 
@@ -187,45 +247,13 @@ def deleteMyAllergy(request):
 
     if 'Y' not in allergy_my:
         for allergy in allergy_list:
-            if allergy.allergyName == find_high:
-                allergy.myAllergy = "N"
-                allergy.save()
+           if allergy.allergyName == find_high:
+               allergy.myAllergy = "N"
+               allergy.save()
 
-    context = {'check2': check, 'allergy_list2': allergy_list}
+    context = {'check': check, 'allergy_list': allergy_list}
 
-    return render(request, 'foodAllergy/Allergy_register.html', context)
-
-
-# ------------------------------------------------------------------------------
-
-
-def resultLoad(request):
-    result_list = Result.objects.order_by()
-    context = {'result_list': result_list}
-    return render(request, 'foodAllergy/result_load.html', context)
-
-
-def detailResult(request, result_name):
-    result_list = Result.objects.order_by()
-    result = Result.objects.get(productName=result_name)
-    context = {'result_list': result_list, 'result': result}
-    return render(request, 'foodAllergy/result_load.html', context)
-
-
-def resultSave(request):
-    f_productName = request.POST.get('f_productName')
-    f_productContent = request.POST.get('f_productContent')
-    f_exist = request.POST.get('f_exist')
-    now = datetime.datetime.now()
-    f_exist = f_exist.strip().replace("\n", "").replace(" ","")
-
-    a = Result(productName=f_productName, productContent=f_productContent,
-                allergyResult=f_exist, create_date=now)
-    a.save()
-
-    return redirect('foodAllergy:index')
-
-#-------------------------------------------------------------
+    return render(request, 'FoodAllergy/allergy_regist.html', context)
 
 
 def chImage(request):
@@ -271,13 +299,14 @@ def chImage(request):
 
     text = {'text': text, 'exist_allergy': exist_allergy}
 
-    return render(request, 'foodAllergy/main.html', text)
+    return render(request, 'FoodAllergy/main.html', text)
 
 
 def uploadfile(request):
     filename = ""
-    print(request)
+
     global f_name
+
 
     if request.method != 'POST':  # GET 방식 요청
         pass
@@ -291,14 +320,13 @@ def uploadfile(request):
             handle_upload(request.FILES["file"])
             # text = chImage2(filename)
             print("filename=", filename)
-        except Exception as e:                             # 예외가 발생했을 때 실행됨
-            print('예외가 발생했습니다.', e)
+        except:
             filename = ""
             print("filename=", filename)
-    return render(request, 'foodAllergy/main.html', {'filename': filename})
-
+    return render(request, 'FoodAllergy/main.html', {'filename': filename})
 
 def handle_upload(f):
     with open("static/images/" + f.name, 'wb+') as destination:
         for ch in f.chunks():
             destination.write(ch)
+

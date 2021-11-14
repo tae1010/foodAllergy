@@ -1,0 +1,37 @@
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image_to_text</title>
+</head>
+
+<script>
+function btnPro() {
+    let ddd = document.getElementById('ttt')
+    ddd.style.display='block'
+}
+</script>
+
+<body>
+<form action="uploadfile/" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="file">
+    <input type="submit" value="등록">
+</form>
+<div>
+    <img src="/static/images/{{filename}}" height="350"/>
+</div>
+
+
+<br><br>
+
+
+<form>
+    <input type="button" value="변환하기" onclick="btnPro()">
+</form>
+<br>
+<div id="ttt" style="display:none">{{ text }}</div>
+
+</body>
+</html>

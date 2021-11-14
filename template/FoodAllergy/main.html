@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body style="background: #C9D6FF;  /* fallback for old browsers /
+background: -webkit-linear-gradient(to right, #E2E2E2, #C9D6FF);  / Chrome 10-25, Safari 5.1-6 /
+background: linear-gradient(to right, #E2E2E2, #C9D6FF); / W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+">
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}">
+
+<div class="container">
+
+
+    <div class="row">
+
+
+        <div class="col-sm-5">
+            <br>
+    <button class="btn btn-primary" onClick="location.href='{% url 'FoodAllergy:register' %}'">등록하기</button>
+    <br>
+            <br><br>
+            <div>
+                {% if filename %}
+                    <img src="/static/images/{{filename}}"  height="500">
+                {% else %}
+                    <img src="/static/images/camera1.png"  height="500">
+                {% endif %}
+            </div>
+            <button class="btn btn-primary">사진찍기</button>
+
+            <form action="{% url 'FoodAllergy:uploadfile' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input class="btn btn-primary" type="file" name="file">
+                <input class="btn btn-primary" type="submit" value="사진확인">
+            </form>
+        </div>
+
+        <div class="col-sm-2">
+
+        </div>
+
+
+        <div class="col-sm-5">
+            <br>
+            <form action="{% url 'FoodAllergy:chImage' %}">
+                {% csrf_token %}
+                <input class="btn btn-primary" type="submit" value="변환하기" >
+            </form>
+            <br>
+            <form action="{% url 'FoodAllergy:resultSave' %}" class="form-inline" style="width:90%" method="post">
+                {% csrf_token %}
+
+                <input class="form-control" type="text" name="f_productName" id="f_productName" placeholder="상품명을 적어주세요">
+                <textarea class="form-control" cols="65" rows="13" name="f_productContent" id="f_productContent"> {{text}}</textarea>
+
+                <br>
+                결과 :
+                <textarea class="form-control" cols="65" rows="5" name="f_exist" id="f_exist">
+                    {% for exist in exist_allergy %}
+                        {{exist}}
+                    {% endfor %}
+                </textarea>
+                {% if exist_allergy %}
+                    포함되어 있습니다
+                {% else %}
+                    포함되어 있지 않습니다
+                {% endif %}
+
+
+                <br>
+
+                <input class="btn btn-primary" type="submit" value="저장">
+                <input class="btn btn-primary" type="button" value="불러오기" onClick="location.href='{% url 'FoodAllergy:resultLoad' %}'">
+            </form>
+        </div>
+    </div>
+
+
+
+    <!--{% if messages %}-->
+    <!--<ul class="messages">-->
+    <!--    {% for message in messages %}-->
+    <!--    <li {% if message.tags %} class="{{ message.tags }}"{% endif %} >{{ message }}</li>-->
+    <!--    {% endfor %}-->
+    <!--</ul>-->
+    <!--{% endif %}-->
+
+</div>
+</body>
+</html>
