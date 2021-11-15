@@ -23,12 +23,9 @@ def index(request):
     allergy_list = Allergy.objects.order_by()
 
     context = {'allergy_list': allergy_list}
-
-
-
     # messages.add_message(request, messages.ERROR, 'Hello world.')
 
-    return render(request, 'FoodAllergy/main.html', context)
+    return render(request, 'foodAllergy/main.html', context)
 
 
 def resultLoad(request):
@@ -37,17 +34,18 @@ def resultLoad(request):
     context = {'result_list': result_list}
     # messages.add_message(request, messages.ERROR, 'Hello world.')
 
-    return render(request, 'FoodAllergy/result_load.html', context)
+    return render(request, 'foodAllergy/result_load.html', context)
+
 
 def detailResult(request, result_name):
 
     result_list = Result.objects.order_by()
     result = Result.objects.get(productName=result_name)
 
-    context = {'result_list': result_list, 'result':result}
+    context = {'result_list': result_list, 'result': result}
     # messages.add_message(request, messages.ERROR, 'Hello world.')
 
-    return render(request, 'FoodAllergy/result_load.html', context)
+    return render(request, 'foodAllergy/result_load.html', context)
 
 
 def resultSave(request):
@@ -64,7 +62,7 @@ def resultSave(request):
     a.save()
     # messages.add_message(request, messages.ERROR, 'Hello world.')
 
-    return redirect('FoodAllergy:index')
+    return redirect('foodAllergy:index')
 
 
 #----------------------------------------------------------------------
@@ -73,7 +71,7 @@ def detail(request, allergy_id):
 
     allergy = Allergy.objects.get(id=allergy_id)
     context = {'allergy': allergy}
-    return render(request, 'FoodAllergy/result_load.html', context)
+    return render(request, 'foodAllergy/result_load.html', context)
 
 
 def allergy_register(request):
@@ -81,7 +79,7 @@ def allergy_register(request):
     allergy_list2 = Allergy.objects.order_by()
 
     context = {'allergy_list': allergy_list, 'allergy_list2': allergy_list2}
-    return render(request, 'FoodAllergy/allergy_regist.html', context)
+    return render(request, 'foodAllergy/allergy_regist.html', context)
 
 def regist(request):
 
@@ -140,7 +138,7 @@ def regist(request):
 
 
 
-    return redirect('FoodAllergy:register')
+    return redirect('foodAllergy:register')
 
 def showLv2(request, allergy_name):
     allergy_list = Allergy.objects.order_by()
@@ -162,7 +160,7 @@ def showLv2(request, allergy_name):
     a = Allergy.objects.get(allergyName=allergy_name)
     context = {'allergyName': a, 'allergy_list': allergy_list, 'count': count}
 
-    return render(request, 'FoodAllergy/allergy_regist.html',context)
+    return render(request, 'foodAllergy/allergy_regist.html',context)
 
 def myShowLv2(request, allergy_name):
     allergy_list = Allergy.objects.order_by()
@@ -181,7 +179,7 @@ def myShowLv2(request, allergy_name):
     a = Allergy.objects.get(allergyName=allergy_name)
     context = {'allergyName2': a, 'allergy_list2': allergy_list, 'count2': count }
 
-    return render(request, 'FoodAllergy/allergy_regist.html',context)
+    return render(request, 'foodAllergy/allergy_regist.html',context)
 
 
 def addMyAllergy(request):
@@ -216,7 +214,7 @@ def addMyAllergy(request):
                     allergy.myAllergy = "Y"
                     allergy.save()
 
-    return render(request, 'FoodAllergy/allergy_regist.html',context)
+    return render(request, 'foodAllergy/allergy_regist.html',context)
 
 
 def deleteMyAllergy(request):
@@ -253,7 +251,7 @@ def deleteMyAllergy(request):
 
     context = {'check': check, 'allergy_list': allergy_list}
 
-    return render(request, 'FoodAllergy/allergy_regist.html', context)
+    return render(request, 'foodAllergy/allergy_regist.html', context)
 
 
 def chImage(request):
@@ -299,7 +297,7 @@ def chImage(request):
 
     text = {'text': text, 'exist_allergy': exist_allergy}
 
-    return render(request, 'FoodAllergy/main.html', text)
+    return render(request, 'foodAllergy/main.html', text)
 
 
 def uploadfile(request):
@@ -323,7 +321,7 @@ def uploadfile(request):
         except:
             filename = ""
             print("filename=", filename)
-    return render(request, 'FoodAllergy/main.html', {'filename': filename})
+    return render(request, 'foodAllergy/main.html', {'filename': filename})
 
 def handle_upload(f):
     with open("static/images/" + f.name, 'wb+') as destination:

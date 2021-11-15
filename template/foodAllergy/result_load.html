@@ -16,11 +16,11 @@ background: linear-gradient(to right, #E2E2E2, #C9D6FF); / W3C, IE 10+/ Edge, Fi
             <div class="col-sm-5">
             <br>
 
-            <button class="btn btn-primary" onClick="location.href='{% url 'FoodAllergy:index' %}'">메인으로</button><br><br><br>
+            <button class="btn btn-primary" onClick="location.href='{% url 'foodAllergy:index' %}'">메인으로</button><br><br><br>
             {% if result_list %}
                         <ul>
                             {% for result in result_list %}
-                                <h5><li><strong><a href="{% url 'FoodAllergy:detailResult' result.productName %}">{{ result.productName }}</a></strong></li></h5><br>
+                                <h5><li><strong><a href="{% url 'foodAllergy:detailResult' result.productName %}">{{ result.productName }}</a></strong></li></h5><br>
                             {% endfor %}
                         </ul>
             {% else %}

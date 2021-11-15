@@ -19,7 +19,7 @@ background: linear-gradient(to right, #E2E2E2, #C9D6FF); / W3C, IE 10+/ Edge, Fi
 
         <div class="col-sm-5">
             <br>
-    <button class="btn btn-primary" onClick="location.href='{% url 'FoodAllergy:register' %}'">등록하기</button>
+    <button class="btn btn-primary" onClick="location.href='{% url 'foodAllergy:register' %}'">등록하기</button>
     <br>
             <br><br>
             <div>
@@ -31,7 +31,7 @@ background: linear-gradient(to right, #E2E2E2, #C9D6FF); / W3C, IE 10+/ Edge, Fi
             </div>
             <button class="btn btn-primary">사진찍기</button>
 
-            <form action="{% url 'FoodAllergy:uploadfile' %}" method="POST" enctype="multipart/form-data">
+            <form action="{% url 'foodAllergy:uploadfile' %}" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 <input class="btn btn-primary" type="file" name="file">
                 <input class="btn btn-primary" type="submit" value="사진확인">
@@ -45,12 +45,12 @@ background: linear-gradient(to right, #E2E2E2, #C9D6FF); / W3C, IE 10+/ Edge, Fi
 
         <div class="col-sm-5">
             <br>
-            <form action="{% url 'FoodAllergy:chImage' %}">
+            <form action="{% url 'foodAllergy:chImage' %}">
                 {% csrf_token %}
                 <input class="btn btn-primary" type="submit" value="변환하기" >
             </form>
             <br>
-            <form action="{% url 'FoodAllergy:resultSave' %}" class="form-inline" style="width:90%" method="post">
+            <form action="{% url 'foodAllergy:resultSave' %}" class="form-inline" style="width:90%" method="post">
                 {% csrf_token %}
 
                 <input class="form-control" type="text" name="f_productName" id="f_productName" placeholder="상품명을 적어주세요">
@@ -73,7 +73,7 @@ background: linear-gradient(to right, #E2E2E2, #C9D6FF); / W3C, IE 10+/ Edge, Fi
                 <br>
 
                 <input class="btn btn-primary" type="submit" value="저장">
-                <input class="btn btn-primary" type="button" value="불러오기" onClick="location.href='{% url 'FoodAllergy:resultLoad' %}'">
+                <input class="btn btn-primary" type="button" value="불러오기" onClick="location.href='{% url 'foodAllergy:resultLoad' %}'">
             </form>
         </div>
     </div>

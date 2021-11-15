@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Allergy,Result
+from .models import Allergy, Result
 
 # Register your models here.
 
